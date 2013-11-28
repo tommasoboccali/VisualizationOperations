@@ -1,0 +1,66 @@
+#!/bin/sh
+
+
+LASTSTATUS="-1"
+PID="-1"
+MESSAGEFILE=`mktemp`
+LOCATION="0-0"
+
+if [ $# -eq 1 ]; then
+  LOCATION=$1
+fi
+
+while (true)
+do
+   RELEASE=`cat ~ccoffl/public/CURRENTRELEASE`
+   DIRE=/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/EventDisplay/RootFileTempStorageArea/Log
+   LOGFILE=`ls -1tr ${DIRE}/SkimSM*.log | tail -1`
+echo LOGFILE $LOGFILE
+   LASTLINE=`grep PhysDecl ${LOGFILE} | tail -1`
+echo LASTLINE $LASTLINE
+   PD=`echo $LASTLINE | awk '{print $13}'`
+   RUN=`echo $LASTLINE | awk '{print $3}'`
+   LS=`echo $LASTLINE | awk '{print $8}'`
+
+   echo "$LOGFILE PhysDecl=$PD LASTSTATUS=$LASTSTATUS"
+
+   if [ "$PD" != "$LASTSTATUS" ]; then
+      if [ "$PD" == "1" ]; then
+	  if [ "$PID" != "-1" ]; then
+	      kill -9 $PID    
+          fi
+        echo "I should display something here"
+#        display -geometry 150x110-${LOCATION} -resize 150x110 PhysDeclOn.png &  
+	echo "Phys Decl bit" > $MESSAGEFILE
+	echo "ON" >> $MESSAGEFILE
+	echo "Since LS ${LS} in run ${RUN}" >> $MESSAGEFILE
+        xmessage -geometry 300x110-${LOCATION} -button DONOTTOUCH:0 -background green -fn 10x20 -file $MESSAGEFILE &
+        PID=$!
+      elif [ "$PD" == "0" ]; then
+	  if [ "$PID" != "-1" ]; then
+	      kill -9 $PID    
+          fi
+        echo "I should display something here"
+#        display -geometry 150x110-${LOCATION} -resize 150x110 PhysDeclOff.png &  
+	echo "Phys Decl bit" > $MESSAGEFILE
+	echo "OFF" >> $MESSAGEFILE
+	echo "Since LS ${LS} in run ${RUN}" >> $MESSAGEFILE
+        xmessage -geometry 300x110-${LOCATION} -button DONOTTOUCH:0 -background red -fn 10x20 -file $MESSAGEFILE &
+        PID=$!
+      else 
+	  if [ "$PID" != "-1" ]; then
+	      kill -9 $PID    
+          fi
+        echo "I should display something here"
+#        display -geometry 150x110-${LOCATION} -resize 150x110 PhysDeclOff.png &  
+	echo "Phys Decl bit" > $MESSAGEFILE
+	echo "UNKNOWN" >> $MESSAGEFILE
+        xmessage -geometry 300x110-${LOCATION} -button DONOTTOUCH:0 -background blue -fn 10x20 -file $MESSAGEFILE &
+        PID=$!
+      fi      
+
+      LASTSTATUS=$PD
+   fi
+
+sleep 2
+done

@@ -1,0 +1,38 @@
+#!/bin/sh
+
+
+USER=$2
+TYPE=$1
+# start all windows needed to make start the event display
+CURRENT=$PWD
+
+RELEASE=`cat ~ccoffl/public/CURRENTRELEASE`
+echo $RELEASE
+
+MAINDIR=/data/evdisp/${RELEASE}/src/DPGAnalysis/Skims/python
+
+# no need to tunnel any more, everything on GPN
+#cd $MAINDIR
+#xterm -fn 6x13 -geometry 100x10-0+0 -T tunnel -e ./maketunnel $USER &
+#echo "PLEASE GIVE YOUR PASSWORD IN THE UPPER RIGHT WINDOW FOR THE TUNNEL (sleeping 10 seconds)"
+#sleep 10
+
+#
+# this now starts on the IT server, not here (clients)
+#
+#echo "Starting back-end now"
+#xterm -fn 6x13 -geometry 100x10-0+188 -T backend -e "cd  $MAINDIR; source $HOME/bin/setSLC4; cmsenv; ./runonSM.py $TYPE" &
+#sleep 5
+
+echo "Starting fireworks..."
+xterm -fn 6x13 -geometry 100x10+132+25 -T cmsshowfeeder+p5 -e "cd  $CURRENT ; ./cmsShowOfflineFeeder" &
+sleep 5
+
+echo "Starting PhysDecl bit check"
+xterm -fn 6x13 -geometry 100x10+132+188 -T PhysDeclMon -e "cd  $CURRENT ; ./check_physdecl_client" &
+
+
+echo "Everything done. If something went wrong please kill the windows and restart...."
+
+
+ 

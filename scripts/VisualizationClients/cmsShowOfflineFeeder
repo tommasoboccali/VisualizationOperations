@@ -1,0 +1,32 @@
+#!/bin/sh
+export VO_CMS_SW_DIR=/afs/cern.ch/cms/sw
+export SCRAM_ARCH=slc5_ia32_gcc434
+source $VO_CMS_SW_DIR/cmsset_default.sh
+cmsenv
+OLDFILE=`/afs/cern.ch/user/c/ccoffl/public/SLC5/lastSpyMode`
+#cd /data/cmsShow33old
+#cd /data/cmsShow34
+cmsShow  --play 5 --chain 5 -c /home/vis/p5.fwc --port 9092  "$OLDFILE" &
+#./cmsShow --loop --play 0.3 --chain 5 -c /data/csmShow33old/newcfg.fwc --port 9092  "$OLDFILE" &
+#cmsShow --loop --play 0.3 --chain 5 -c /data/fireworks.fwc --port 9091  "$OLDFILE" &
+
+RELEASE=`cat ~ccoffl/public/CURRENTRELEASE`
+echo $RELEASE
+#cd /data/evdisp/${RELEASE}
+#source ${HOME}/bin/setSLC4.sh
+
+cmsenv
+
+while /bin/true ; do
+
+  FILE=`/afs/cern.ch/user/c/ccoffl/public/SLC5/lastSpyMode`
+  echo $FILE vs $OLDFILE
+  if [ "$FILE" != "$OLDFILE" ] ; then
+    echo New file available
+    echo "$FILE" | nc localhost 9092
+  fi
+
+  sleep 5 
+
+  OLDFILE=$FILE
+done

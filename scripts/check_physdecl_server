@@ -1,0 +1,24 @@
+#!/bin/sh
+if [ "$1" == "" ]; then
+    echo "Usage: $0 <directory>"
+    exit 1
+fi
+
+DIRE=$1/Log
+MESSAGEFILE=`mktemp`
+
+while (true)
+do
+   LOGFILE=`ls -1tr ${DIRE}/SkimSM*.log | grep -vi second|tail -1`
+#echo LOGFILE $LOGFILE
+   LASTLINE=`grep PhysDecl ${LOGFILE} |grep -i accept| tail -1`
+#echo LASTLINE $LASTLINE
+   cp -f $LOGFILE ${DIRE}/Current.log
+   PD=`echo $LASTLINE | awk '{print $13}'`
+   RUN=`echo $LASTLINE | awk '{print $3}'`
+   LS=`echo $LASTLINE | awk '{print $8}'`
+   rm -f $DIRE/Status
+#   echo $PD $RUN $LS  
+   echo $PD $RUN $LS > $DIRE/Status 
+sleep 20 
+done

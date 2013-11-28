@@ -1,0 +1,7 @@
+#!/bin/sh
+wall "Fireworks Online System is going to be switched off in 1 minute"
+sleep 60
+rm ~/factory_mode
+wall "Fireworks Online System is starting up"
+touch ~/factory_mode
+monitorFireworks.pl

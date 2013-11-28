@@ -1,0 +1,22 @@
+The livelyiSpy.sh script takes care of everything. It is in a crontab table:
+
+[scx5scr36] /home/vis > crontab -l
+*/2 * * * * /home/vis/livelyiSpy.sh
+3 * * * * /usr/sbin/tmpwatch --atime 100 /home/vis/EventDisplay/images
+
+The script defines:
+* where the pictures are published:
+
+IMAGE_DIR="/home/vis/EventDisplay/images"
+
+* which geometry file is taken:
+DETECTOR_GEOMETRY="/home/iSpy/cms-detector.ig"
+
+* configuration of the client:
+CUTS_ISS="/home/iSpy/cuts.iss"
+VIEWS_IML="/home/iSpy/online-views.iml"
+
+* where the logging info goes:
+WORKING_DIR="/home/vis/iglogs"
+
+Images clean up is done by tmpwatch.

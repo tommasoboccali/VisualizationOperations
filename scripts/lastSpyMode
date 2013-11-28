@@ -1,0 +1,50 @@
+#!/bin/sh
+if [ "$1" == "" ]; then
+   echo "Usage: $0 <directory>"
+   exit 1
+fi
+
+DIRE=$1
+export VO_CMS_SW_DIR=/afs/cern.ch/cms
+export SCRAM_ARCH=slc5_ia32_gcc434
+source $VO_CMS_SW_DIR/cmsset_default.sh
+TMPFILE=`mktemp`
+#RELEASE=`cat ~ccoffl/public/CURRENTRELEASE`
+#source ${HOME}/bin/setSLC5.sh
+#cd /data/EventDisplay/${RELEASE}
+cmsenv
+killall edmEventSize
+
+#DIR="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/EventDisplay/RootFileTempStorageArea/*.root"
+DIR="$DIRE/*.root"
+#ls $DIR  -ltra | awk '{if($5 > 1000000 ) print $9}' | tail -n2 | head -1
+#ls $DIR  -ltr | tail -n2 | sort -k 8 | head -1 | awk '{if($5 > 1000000 ) print $9}'
+ls $DIR  -lt | head -20 | awk '{if($5 > 100000 ) print $9}' > $TMPFILE
+#cat   $TMPFILE
+for file in `cat $TMPFILE`
+do
+#  echo test $file
+  open=`/usr/sbin/lsof $file | grep cmsRun | wc -l`
+
+#  echo $file $open
+  if [ "$open" == "0" ]; then
+
+# test if readable
+     VALID=`edmEventSize -v $file | grep EventAuxiliary | wc -l`
+     if [ "$VALID" == "0" ]; then
+#        echo "$FILE not yet a valid file"
+        continue
+     else
+#        echo I LIKE IT $FILE
+        break;
+     fi
+	
+  fi
+done
+
+if [ "$VALID" == "0" ]; then
+   echo "NOTVALIDFILEFOUND"
+else 
+   echo $file 
+fi
+ 

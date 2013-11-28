@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/data/evdisp/ispy/ispy --online vocms89:9000 /data/evdisp/ispy/cms-geometry.ig
