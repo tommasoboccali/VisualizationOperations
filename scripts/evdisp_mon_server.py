@@ -7,7 +7,7 @@ DIRE="None"
 
 # connection parameters
 HOST = 'localhost'    # host where thr program runs runs
-PORTSERV = 9005            # receive port
+PORTSERV =  9005            # receive port
 PORTCLIENT = 9006
 HOSTREC=''
 RECEIVED = 0                # flag for tcpserver thread
@@ -66,7 +66,7 @@ def buildans():
    ANS+="HLTSEL:"+HLTCFG+";"
    ANS+="TTSEL:"+TRIGTYPECFG+";"
    ANS+="L1TTSEL:"+L1TECHCFG+";"
-   
+
 
 #   print LOGFILE
    return ANS
@@ -79,7 +79,7 @@ def tcpsend(MESSAGE):
       s_send.connect((HOSTREC, PORTCLIENT))
       s_send.send(MESSAGE)
    except:
-      print "EVDISPMON: Problem in answering "+HOSTREC 
+      print "EVDISPMON: Problem in answering "+HOSTREC
    # print 'TCP Sending '+MESSAGE
    s_send.close()
 
@@ -106,7 +106,7 @@ def tcpserver():
        print "EVDISPMON: Tried too many times.....exiting now."
        sys.exit(1)
 
-          
+
     while True:
         s_recv.listen(1)
         # print 'Server starting and waiting for connections'
